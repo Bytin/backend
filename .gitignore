@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### local ###
+Dockerfile.local
+docker-compose.local.yml
+application-local.yml
+application-local.properties
