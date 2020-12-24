@@ -33,10 +33,10 @@ build/
 .vscode/
 
 ### local ###
-Dockerfile.local
-docker-compose.local.yml
-docker-compose.debug.yml
-application-local.yml
-application-local.properties
-**/*.session.sql
+*.local
+*.local.yml
+*.debug.yml
+*-local.yml
+*-local.properties
+*.session.sql
 *-local.sh
