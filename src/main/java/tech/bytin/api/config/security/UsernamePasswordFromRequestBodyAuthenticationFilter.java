@@ -1,14 +1,12 @@
 package tech.bytin.api.config.security;
 
 import java.io.IOException;
-import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -18,6 +16,8 @@ public class UsernamePasswordFromRequestBodyAuthenticationFilter
 
         @Autowired
         private ObjectMapper objectMapper;
+        private record Details(String username, String password) { }
+        private Details details;
 
         public UsernamePasswordFromRequestBodyAuthenticationFilter() {
                 setAuthenticationSuccessHandler((req, response, e) -> {
@@ -33,27 +33,32 @@ public class UsernamePasswordFromRequestBodyAuthenticationFilter
 
         @Override
         public Authentication attemptAuthentication(HttpServletRequest request,
-                        HttpServletResponse response) throws AuthenticationException {
-                var tuple = tryToGetUsernamePasswordFromRequest(request);
-                Authentication auth =
-                                new UsernamePasswordAuthenticationToken(tuple.get(0), tuple.get(1));
-                return getAuthenticationManager().authenticate(auth);
+        HttpServletResponse response) throws AuthenticationException {
+                details = tryToGetUsernamePasswordFromRequest(request);
+                return super.attemptAuthentication(request, response);
         }
 
-        private List<String> getUsernamePasswordFromRequest(HttpServletRequest request)
+        @Override
+        protected String obtainUsername(HttpServletRequest request) {
+                return details.username();
+        }
+
+        @Override
+        protected String obtainPassword(HttpServletRequest request) {
+                return details.password();
+        }
+
+        private Details getUsernamePasswordFromRequest(HttpServletRequest request)
                         throws JsonParseException, JsonMappingException, IOException {
-                record Details(String username, String password) {
-                };
-                Details dets = objectMapper.readValue(request.getReader(), Details.class);
-                return List.of(dets.username, dets.password);
+                return objectMapper.readValue(request.getReader(), Details.class);
         }
 
-        private List<String> tryToGetUsernamePasswordFromRequest(HttpServletRequest request) {
+        private Details tryToGetUsernamePasswordFromRequest(HttpServletRequest request) {
                 try {
                         return getUsernamePasswordFromRequest(request);
                 } catch (IOException e) {
                         e.printStackTrace();
-                        return List.of(null, null);
+                        return new Details(null, null);
                 }
         }
 
