@@ -35,5 +35,8 @@ build/
 ### local ###
 Dockerfile.local
 docker-compose.local.yml
+docker-compose.debug.yml
 application-local.yml
 application-local.properties
+**/*.session.sql
+*-local.sh
