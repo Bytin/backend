@@ -4,7 +4,7 @@ import org.springframework.stereotype.Repository;
 import core.entity.User;
 import core.gateway.UserGateway;
 import tech.bytin.api.jpaEntity.UserJpaEnity;
-import tech.bytin.api.util.Utils;
+import tech.bytin.api.util.EntityMapper;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -28,12 +28,12 @@ public class UserRepository implements UserGateway {
 
         @Override
         public Collection<User> findAll() {
-                return jpaRepo.findAll().stream().map(Utils::mapJpaUserToUserEntity).collect(Collectors.toList());
+                return jpaRepo.findAll().stream().map(EntityMapper::mapJpaUserToUserEntity).collect(Collectors.toList());
         }
 
         @Override
         public Optional<User> findById(Long id) {
-                return jpaRepo.findById(id).map(Utils::mapJpaUserToUserEntity);
+                return jpaRepo.findById(id).map(EntityMapper::mapJpaUserToUserEntity);
         }
 
         @Override
@@ -43,7 +43,7 @@ public class UserRepository implements UserGateway {
 
         @Override
         public void save(User userentity) {
-                jpaRepo.save(Utils.mapUserToJpaEntity(userentity));
+                jpaRepo.save(EntityMapper.mapUserToJpaEntity(userentity));
         }
 
         @Override
@@ -53,7 +53,7 @@ public class UserRepository implements UserGateway {
 
         @Override
         public Optional<User> findByUserName(String username) {
-                return jpaRepo.findByUsername(username).map(Utils::mapJpaUserToUserEntity);
+                return jpaRepo.findByUsername(username).map(EntityMapper::mapJpaUserToUserEntity);
         }
 }
 

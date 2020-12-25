@@ -11,7 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import tech.bytin.api.repository.UserRepository;
-import tech.bytin.api.util.Utils;
+import tech.bytin.api.util.EntityMapper;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 UserRepository repo = getApplicationContext().getBean("userGateway",
                                 UserRepository.class);
                 auth.userDetailsService(username -> new SecurityUser(
-                                repo.findByUserName(username).map(Utils::mapUserToJpaEntity)
+                                repo.findByUserName(username).map(EntityMapper::mapUserToJpaEntity)
                                                 .orElseThrow(() -> new UsernameNotFoundException(
                                                                 "Unable to find that user"))));
         }
