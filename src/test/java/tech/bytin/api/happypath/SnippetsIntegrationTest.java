@@ -3,36 +3,15 @@ package tech.bytin.api.happypath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
-import core.boundary.SnippetIOBoundary;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import java.util.Optional;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import tech.bytin.api.config.security.SecurityConfig;
-import tech.bytin.api.controller.*;
-import tech.bytin.api.gateway.jpaRepo.*;
+import tech.bytin.api.TestCase;
 import tech.bytin.api.jpaEntity.UserJpaEnity;
 
-@ComponentScan("tech.bytin.api")
-@ContextConfiguration(classes = {SnippetIOBoundary.class, SecurityConfig.class})
-@WebMvcTest(controllers = {SnippetController.class})
-public class SnippetsIntegrationTest {
-
-        @MockBean
-        JpaSnippetRepository snippets;
-
-        @MockBean
-        JpaUserRepository users;
-
-        @Autowired
-        private MockMvc mvc;
+public class SnippetsIntegrationTest extends TestCase {
 
         @BeforeEach
         void init() {
