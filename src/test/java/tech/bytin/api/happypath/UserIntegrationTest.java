@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import core.dto.UserDTO;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import tech.bytin.api.TestCase;
@@ -15,7 +16,7 @@ import tech.bytin.api.jpaEntity.UserJpaEnity;
 
 public class UserIntegrationTest extends TestCase {
 
-       @Autowired
+        @Autowired
         PasswordEncoder passwordEncoder;
 
         String username = "noah";
@@ -40,6 +41,31 @@ public class UserIntegrationTest extends TestCase {
                                                 """, username, password));
                 mvc.perform(request).andExpect(status().isOk()).andExpect(
                                 jsonPath("$.message").value("User '" + username + "' created."));
+        }
+
+        @Test
+        void getProfileTest() throws Exception {
+                var request = post("/user/profile").contentType("application/json")
+                                .content(String.format("""
+                                                {
+                                                        "username": "%s"
+                                                }
+                                                """, username));
+                mvc.perform(request).andExpect(status().isOk())
+                                .andExpect(jsonPath("$.user").value(new UserDTO(1, username)));
+        }
+
+        @Test
+        void updateUserTest() throws Exception {
+                var request = post("/user/update").contentType("application/json")
+                                .content(String.format("""
+                                                {
+                                                        "oldUsername": "%s",
+                                                        "username": "roger"
+                                                }
+                                                """, username));
+                mvc.perform(request).andExpect(status().isOk())
+                                .andExpect(jsonPath("$.message").value("User info has been updated successfully."));
         }
 
         @Test
