@@ -13,17 +13,19 @@ import tech.bytin.api.jpaEntity.UserJpaEnity;
 
 public class SnippetsIntegrationTest extends TestCase {
 
+        String username = "noah";
+
         @BeforeEach
         void init() {
-                var mockJpaUser = new UserJpaEnity(1, "noah", "asdf", "USER");
-                Mockito.when(users.findByUsername("noah")).thenReturn(Optional.of(mockJpaUser));
+                var mockJpaUser = new UserJpaEnity(1, username, "asdf", "USER");
+                Mockito.when(users.findByUsername(username)).thenReturn(Optional.of(mockJpaUser));
         }
 
         @Test
         @WithMockUser(username = "noah", roles = {"USER"})
         void addEndpointTest() throws Exception {
-                RequestBuilder request =
-                                post("/snippets/add").contentType("application/json").content("""
+                RequestBuilder request = post("/snippets/add").contentType("application/json")
+                                .content(String.format("""
                                                 {
                                                     "snippet": {
                                                         "title": "Private",
@@ -31,15 +33,14 @@ public class SnippetsIntegrationTest extends TestCase {
                                                         "code": "asdlfkj",
                                                         "description": "asdfklj",
                                                         "owner": {
-                                                                "username": "noah"
+                                                                "username": "%s"
                                                         },
                                                         "hidden": true
                                                     }
                                                 }
-                                                """);
-                mvc.perform(request).andExpect(status().isOk())
-                                .andExpect(jsonPath("$.message")
-                                                .value("Snippet has been successfully saved."));
+                                                """, username));
+                mvc.perform(request).andExpect(status().isOk()).andExpect(jsonPath("$.message")
+                                .value("Snippet has been successfully saved."));
         }
 
 
