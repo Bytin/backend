@@ -1,21 +1,18 @@
-package tech.bytin.api.repository;
+package tech.bytin.api.gateway;
 
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.stereotype.Repository;
 import core.entity.Snippet;
 import core.gateway.SnippetGateway;
-import tech.bytin.api.jpaEntity.SnippetJpaEntity;
+import lombok.RequiredArgsConstructor;
+import tech.bytin.api.gateway.jpaRepo.JpaSnippetRepository;
 import tech.bytin.api.util.EntityMapper;
 
+@RequiredArgsConstructor
 public class SnippetRepository implements SnippetGateway {
 
-        @Autowired
-        private JpaSnippetRepository springRepo;
+        private final JpaSnippetRepository springRepo;
 
         @Override
         public void deleteById(Long id) {
@@ -59,14 +56,4 @@ public class SnippetRepository implements SnippetGateway {
                 return springRepo.findMostRecent(size);
         }
 
-}
-
-
-@Repository
-interface JpaSnippetRepository extends JpaRepository<SnippetJpaEntity, Long> {
-        Collection<Snippet> findAllByOwnerUsername(String username);
-
-        @Query(value = "SELECT * FROM snippet WHERE is_private <> true ORDER BY date_updated DESC FETCH FIRST ?1 ROWS ONLY",
-                        nativeQuery = true)
-        Collection<Snippet> findMostRecent(int size);
-}
+} 

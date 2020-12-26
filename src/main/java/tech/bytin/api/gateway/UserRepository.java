@@ -1,20 +1,18 @@
-package tech.bytin.api.repository;
+package tech.bytin.api.gateway;
 
-import org.springframework.stereotype.Repository;
 import core.entity.User;
 import core.gateway.UserGateway;
-import tech.bytin.api.jpaEntity.UserJpaEnity;
+import lombok.RequiredArgsConstructor;
+import tech.bytin.api.gateway.jpaRepo.JpaUserRepository;
 import tech.bytin.api.util.EntityMapper;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
 
+@RequiredArgsConstructor
 public class UserRepository implements UserGateway {
 
-        @Autowired
-        private JpaUserRepository jpaRepo;
+        private final JpaUserRepository jpaRepo;
 
         @Override
         public void deleteById(Long id) {
@@ -58,8 +56,3 @@ public class UserRepository implements UserGateway {
 }
 
 
-@Repository
-interface JpaUserRepository extends JpaRepository<UserJpaEnity, Long> {
-        Optional<UserJpaEnity> findByUsername(String username);
-        boolean existsByUsername(String username);
-}

@@ -21,7 +21,6 @@ public class UsernamePasswordFromRequestBodyAuthenticationFilter
 
         public UsernamePasswordFromRequestBodyAuthenticationFilter() {
                 setAuthenticationSuccessHandler((req, response, e) -> {
-                        response.setContentType("application/json");
                         response.setStatus(HttpServletResponse.SC_OK);
                         response.getWriter().println("Login Successful");
                 });

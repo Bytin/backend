@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import tech.bytin.api.repository.UserRepository;
+import tech.bytin.api.gateway.UserRepository;
 import tech.bytin.api.util.EntityMapper;
 
 @EnableWebSecurity
