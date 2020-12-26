@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.test.context.support.WithMockUser;
 import core.dto.UserDTO;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -19,8 +20,8 @@ public class UserIntegrationTest extends TestCase {
         @Autowired
         PasswordEncoder passwordEncoder;
 
-        String username = "noah";
-        String password = "password@s";
+        final String username = "noah";
+        final String password = "password@s";
 
         @BeforeEach
         protected void init() throws Exception {
@@ -44,6 +45,7 @@ public class UserIntegrationTest extends TestCase {
         }
 
         @Test
+        @WithMockUser(username = username, roles = {"USER"})
         void getProfileTest() throws Exception {
                 var request = post("/user/profile").contentType("application/json")
                                 .content(String.format("""
@@ -56,6 +58,7 @@ public class UserIntegrationTest extends TestCase {
         }
 
         @Test
+        @WithMockUser(username = username, roles = {"USER"})
         void updateUserTest() throws Exception {
                 var request = post("/user/update").contentType("application/json")
                                 .content(String.format("""

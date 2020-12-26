@@ -13,7 +13,7 @@ import tech.bytin.api.jpaEntity.UserJpaEnity;
 
 public class SnippetsIntegrationTest extends TestCase {
 
-        String username = "noah";
+        final String username = "noah";
 
         @BeforeEach
         void init() {
@@ -22,7 +22,7 @@ public class SnippetsIntegrationTest extends TestCase {
         }
 
         @Test
-        @WithMockUser(username = "noah", roles = {"USER"})
+        @WithMockUser(username = username, roles = {"USER"})
         void addEndpointTest() throws Exception {
                 RequestBuilder request = post("/snippets/add").contentType("application/json")
                                 .content(String.format("""
