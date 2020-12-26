@@ -36,7 +36,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-core-maven-
       - name: Load tech.bytin.core dependency
-        run:|
+        run: |
             mkdir core
             cd core
             git pull "https://gnarus-g:${{secrets.pass}}@github.com/Bytin/core.git main
