@@ -39,7 +39,7 @@ jobs:
         run: |
             mkdir core
             cd core
-            git pull "https://gnarus-g:${{secrets.pass}}@github.com/Bytin/core.git main
+            git pull https://gnarus-g:${{secrets.PASS}}@github.com/Bytin/core.git main
             mvn clean install
             mvn install:install-file -Dfile=target/core-1.0-SNAPSHOT.jar -DpomFile=pom.xml -Dsources=target/core-1.0-SNAPSHOT.jar
       - name: Run tests
