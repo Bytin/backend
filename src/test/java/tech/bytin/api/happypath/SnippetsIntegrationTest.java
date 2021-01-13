@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.RequestBuilder;
+import core.entity.User.UserRole;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import java.util.Optional;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -14,10 +15,11 @@ import tech.bytin.api.jpaEntity.UserJpaEnity;
 public class SnippetsIntegrationTest extends TestCase {
 
         final String username = "noah";
+        final String email = username + "@gmail.com";
 
         @BeforeEach
         void init() {
-                var mockJpaUser = new UserJpaEnity(1, username, "asdf", "USER");
+                var mockJpaUser = new UserJpaEnity(1, username, email, "asdf", UserRole.USER);
                 Mockito.when(users.findByUsername(username)).thenReturn(Optional.of(mockJpaUser));
         }
 

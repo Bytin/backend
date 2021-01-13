@@ -36,12 +36,6 @@ public class SnippetRepository implements SnippetGateway {
         }
 
         @Override
-        public int getSize() {
-                // TODO Auto-generated method stub
-                return 0;
-        }
-
-        @Override
         public void save(Snippet snippet) {
                 springRepo.save(EntityMapper.mapSnippetToJpaEntity(snippet));
         }
@@ -54,6 +48,11 @@ public class SnippetRepository implements SnippetGateway {
         @Override
         public Collection<Snippet> findMostRecent(int size) {
                 return springRepo.findMostRecent(size);
+        }
+
+        @Override
+        public void delete(Snippet snippet) {
+            springRepo.delete(EntityMapper.mapSnippetToJpaEntity(snippet));
         }
 
 } 

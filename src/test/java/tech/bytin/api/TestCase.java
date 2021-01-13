@@ -8,6 +8,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import tech.bytin.api.config.security.SecurityConfig;
 import tech.bytin.api.controller.UserController;
+import tech.bytin.api.gateway.jpaRepo.JpaActivationTokenRepo;
 import tech.bytin.api.gateway.jpaRepo.JpaSnippetRepository;
 import tech.bytin.api.gateway.jpaRepo.JpaUserRepository;
 
@@ -19,7 +20,10 @@ public abstract class TestCase {
         protected JpaUserRepository users;
 
         @MockBean
-        protected JpaSnippetRepository snippets;// the app context, for some reason, still needs this.
+        protected JpaSnippetRepository snippets;
+
+        @MockBean
+        protected JpaActivationTokenRepo activationTokens;
 
         @Autowired
         protected MockMvc mvc;

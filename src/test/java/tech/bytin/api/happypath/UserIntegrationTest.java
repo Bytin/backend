@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import core.dto.UserDTO;
+import core.entity.User.UserRole;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import tech.bytin.api.TestCase;
@@ -21,25 +22,28 @@ public class UserIntegrationTest extends TestCase {
         PasswordEncoder passwordEncoder;
 
         final String username = "noah";
+        final String email = username + "@gmail.com";
         final String password = "password@s";
 
         @BeforeEach
         protected void init() throws Exception {
-                var mockJpaUser = new UserJpaEnity(1, username, passwordEncoder.encode(password),
-                                "USER");
+                var mockJpaUser = new UserJpaEnity(1, username, email, passwordEncoder.encode(password),
+                                UserRole.USER);
                 Mockito.when(users.findByUsername("noah")).thenReturn(Optional.of(mockJpaUser));
         }
 
         @ParameterizedTest
         @CsvSource(value = {"bruhman, asdflkjewr", "dudeguy, sdlfkuwegh"})
         void registerUserTest(String username, String password) throws Exception {
+                var email = username + "@gmail.com";
                 var request = post("/user/register").contentType("application/json")
                                 .content(String.format("""
                                                 {
                                                         "username": "%s",
+                                                        "email": "%s",
                                                         "password": "%s"
                                                 }
-                                                """, username, password));
+                                                """, username, email, password));
                 mvc.perform(request).andExpect(status().isOk()).andExpect(
                                 jsonPath("$.message").value("User '" + username + "' created."));
         }
@@ -54,7 +58,7 @@ public class UserIntegrationTest extends TestCase {
                                                 }
                                                 """, username));
                 mvc.perform(request).andExpect(status().isOk())
-                                .andExpect(jsonPath("$.user").value(new UserDTO(1, username)));
+                                .andExpect(jsonPath("$.user").value(new UserDTO(1, username, username + "@gmail.com", UserRole.USER)));
         }
 
         @Test

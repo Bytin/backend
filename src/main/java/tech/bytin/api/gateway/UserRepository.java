@@ -35,11 +35,6 @@ public class UserRepository implements UserGateway {
         }
 
         @Override
-        public int getSize() {
-                return 0;//TODO what is this for again?
-        }
-
-        @Override
         public void save(User userentity) {
                 jpaRepo.save(EntityMapper.mapUserToJpaEntity(userentity));
         }
@@ -52,6 +47,11 @@ public class UserRepository implements UserGateway {
         @Override
         public Optional<User> findByUserName(String username) {
                 return jpaRepo.findByUsername(username).map(EntityMapper::mapJpaUserToUserEntity);
+        }
+
+        @Override
+        public void delete(User user) {
+                jpaRepo.delete(EntityMapper.mapUserToJpaEntity(user));
         }
 }
 

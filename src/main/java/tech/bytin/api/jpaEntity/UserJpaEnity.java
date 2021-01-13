@@ -1,10 +1,13 @@
 package tech.bytin.api.jpaEntity;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import core.entity.User.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +22,8 @@ public class UserJpaEnity {
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
         private long id;
-        private String username, password, role;
+        private String username, email, password;
+        @Enumerated(EnumType.STRING)
+        private UserRole role;
 
 }

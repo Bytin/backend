@@ -25,14 +25,18 @@ public class UserController {
         @PostMapping("register")
         public ResponseEntity<?> createUser(@RequestBody CreateUser.RequestModel requestModel)
                         throws JsonProcessingException {
-                var resModel = userInteractor.createUser(requestModel,
+                
+                var req = new CreateUser.RequestModel(requestModel.getUsername(), requestModel.getEmail(), requestModel.getPassword(), token -> {
+                    System.out.println("Activation Token: " + token + " -- for " + token.getUsername()); //TODO a real implementation with email sending
+                });
+                var resModel = userInteractor.createUser(req,
                                 s -> passwordEncoder.encode(s));
                 return ResponseEntity.ok().body(resModel);
         }
 
         @PostMapping("profile")
         public ResponseEntity<?> getProfile(@RequestBody RetrieveProfile.RequestModel requestModel){
-                return ResponseEntity.ok().body(userInteractor.retrieveUserProfile(requestModel));
+                return ResponseEntity.ok().body(userInteractor.retrieveProfile(requestModel));
         }
 
         @PostMapping("update")
