@@ -1,22 +1,26 @@
 package tech.bytin.api.jpaEntity;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import core.entity.ActivationToken;
-import core.utils.ExpiringToken;
+import org.hibernate.annotations.CreationTimestamp;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
 @NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Table(name = "activation_token")
-public class ActivationTokenJpaEntity extends ActivationToken{
+@AllArgsConstructor
+@Builder
+public class ActivationTokenJpaEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,9 +28,11 @@ public class ActivationTokenJpaEntity extends ActivationToken{
 
     private String username;
 
-    public ActivationTokenJpaEntity(String username, ExpiringToken token){
-        super(username, token);
-        this.username = username;
-    }
+    private UUID uuid;
+
+    private Duration lifeSpan;
+
+    @CreationTimestamp
+    private LocalDateTime dateCreated;
     
 }
