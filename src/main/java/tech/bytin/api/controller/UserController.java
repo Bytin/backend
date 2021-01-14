@@ -10,6 +10,7 @@ import core.usecase.user.CreateUser;
 import core.usecase.user.RetrieveProfile;
 import core.usecase.user.UpdateUserInfo;
 import lombok.RequiredArgsConstructor;
+import tech.bytin.api.service.mail.ActivationLinkMailSender;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,17 +23,19 @@ public class UserController {
 
         private final UserIOBoundary userInteractor;
         private final PasswordEncoder passwordEncoder;
+        private final ActivationLinkMailSender activationMail;
 
         @PostMapping("register")
         public ResponseEntity<?> createUser(@RequestBody CreateUser.RequestModel requestModel)
                         throws JsonProcessingException {
-                
                 var req = new CreateUser.RequestModel(requestModel.getUsername(), requestModel.getEmail(), requestModel.getPassword(), token -> {
-                    System.out.println("Activation Token: " + token + " -- for " + token.getUsername()); //TODO a real implementation with email sending
+                    System.out.println("Activation Token: " + token + " -- for " + token.getUsername());
+                    activationMail.sendActivationLink(requestModel.getEmail(), token.toString());
                 });
                 var resModel = userInteractor.createUser(req,
                                 password -> passwordEncoder.encode(password));
-                return ResponseEntity.ok().body(resModel);
+                var revisedResponse = new CreateUser.ResponseModel(resModel.getMessage() + " Check your email for instructions on how to activate the account.");
+                return ResponseEntity.ok().body(revisedResponse);
         }
 
         @PostMapping("activate")

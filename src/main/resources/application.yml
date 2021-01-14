@@ -7,6 +7,9 @@ server:
   servlet:
     context-path: /api
 
+web:
+  location: ${FRONTEND_LOCATION}
+
 spring:
   datasource:
     url: ${JDBC_DATABASE_URL}
@@ -21,3 +24,15 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  mail:
+    host: smtp.${MAIL_DOMAIN}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+

@@ -43,7 +43,6 @@ public class UserIntegrationTest extends TestCase {
 
         Mockito.when(activationTokens.findByUsername(noah))
                 .thenReturn(Optional.of(EntityMapper.mapActivationTokenToJpa(activationToken)));
-
     }
 
     @ParameterizedTest
@@ -59,7 +58,7 @@ public class UserIntegrationTest extends TestCase {
                         }
                         """, username, email, password));
         mvc.perform(request).andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("User '" + username + "' created."));
+                .andExpect(jsonPath("$.message").value("User '" + username + "' created. Check your email for instructions on how to activate the account."));
     }
 
     @Test
