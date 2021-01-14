@@ -10,30 +10,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import core.dto.UserDTO;
+import core.entity.ActivationToken;
 import core.entity.User.UserRole;
-import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import tech.bytin.api.TestCase;
 import tech.bytin.api.jpaEntity.UserJpaEnity;
+import tech.bytin.api.util.EntityMapper;
 
 public class UserIntegrationTest extends TestCase {
 
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    final String username = "noah";
-    final String email = username + "@gmail.com";
+    final String noah = "noah";
+    final String james = "james";
+    final String email_noah = noah + "@gmail.com";
+    final String email_james = james + "@gmail.com";
     final String password = "password@s";
+
+    final ActivationToken activationToken = new ActivationToken(0, noah);
 
     @BeforeEach
     protected void init() throws Exception {
-        var mockJpaUser = new UserJpaEnity(1, username, email, passwordEncoder.encode(password),
+        var mockNoah = new UserJpaEnity(1, noah, email_noah, passwordEncoder.encode(password),
                 UserRole.USER);
-        var mockJpaUnactivatedUser = new UserJpaEnity(1, username, email,
-                passwordEncoder.encode(password), UserRole.UNACTIVATED);
-        Mockito.when(users.findByUsername("noah")).thenReturn(Optional.of(mockJpaUser));
-        Mockito.when(users.findByUsername("james")).thenReturn(Optional.of(mockJpaUnactivatedUser));
+        var mockJames = new UserJpaEnity(2, noah, email_noah, passwordEncoder.encode(password),
+                UserRole.UNACTIVATED);
+
+        Mockito.when(users.findByUsername("noah")).thenReturn(Optional.of(mockNoah));
+        Mockito.when(users.findByUsername("james")).thenReturn(Optional.of(mockJames));
+
+        Mockito.when(activationTokens.findByUsername(noah))
+                .thenReturn(Optional.of(EntityMapper.mapActivationTokenToJpa(activationToken)));
+
     }
 
     @ParameterizedTest
@@ -53,34 +63,67 @@ public class UserIntegrationTest extends TestCase {
     }
 
     @Test
-    void activateUserTest() {
-
-        fail();
-
+    void activateUserTest() throws Exception {
+        var request =
+                post("/user/activate").contentType("application/json").content(String.format("""
+                        {
+                            "username": "%s",
+                            "token": "%s"
+                        }
+                        """, noah, activationToken.toString()));
+        mvc.perform(request).andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("User '" + noah + "' has been activated."));
     }
 
     @Test
-    @WithMockUser(username = username, roles = {"USER"})
+    void activateUserFailsWhenUserHasntRegisteredTest() throws Exception {
+        var request =
+                post("/user/activate").contentType("application/json").content(String.format("""
+                        {
+                            "username": "%s",
+                            "token": "%s"
+                        }
+                        """, james, "laksdyblkaewrulyadsgl"));
+        mvc.perform(request).andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").value("A token is not assigned to " + james));
+    }
+
+
+    @Test
+    @WithMockUser(username = noah, roles = {"USER"})
     void getProfileTest() throws Exception {
         var request =
                 post("/user/profile").contentType("application/json").content(String.format("""
                         {
                                 "username": "%s"
                         }
-                        """, username));
-        mvc.perform(request).andExpect(status().isOk()).andExpect(jsonPath("$.user")
-                .value(new UserDTO(1, username, username + "@gmail.com", UserRole.USER)));
+                        """, noah));
+        mvc.perform(request).andExpect(status().isOk()).andExpect(
+                jsonPath("$.user").value(new UserDTO(1, noah, noah + "@gmail.com", UserRole.USER)));
     }
 
     @Test
-    @WithMockUser(username = username, roles = {"USER"})
+    void activateUserFailsWhenTokenIsBadTest() throws Exception {
+        var request =
+                post("/user/activate").contentType("application/json").content(String.format("""
+                        {
+                            "username": "%s",
+                            "token": "%s"
+                        }
+                        """, noah, "laksdyblkaewrulyadsgl"));
+        mvc.perform(request).andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").value("That token is not the one assigned."));
+    }
+
+    @Test
+    @WithMockUser(username = noah, roles = {"USER"})
     void updateUserTest() throws Exception {
         var request = post("/user/update").contentType("application/json").content(String.format("""
                 {
                         "oldUsername": "%s",
                         "username": "roger"
                 }
-                """, username));
+                """, noah));
         mvc.perform(request).andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("User info has been updated successfully."));
     }
@@ -92,8 +135,9 @@ public class UserIntegrationTest extends TestCase {
                         "username":"%s",
                         "password":"%s"
                 }
-                """, username, password));
-        mvc.perform(request).andExpect(status().isOk()).andExpect(jsonPath("$").value("Login Successful")).andReturn();
+                """, noah, password));
+        mvc.perform(request).andExpect(status().isOk())
+                .andExpect(jsonPath("$").value("Login Successful")).andReturn();
     }
 
     @Test
@@ -105,6 +149,7 @@ public class UserIntegrationTest extends TestCase {
                         "password":"%s"
                 }
                 """, username, password));
-        mvc.perform(request).andExpect(status().isBadRequest()).andExpect(jsonPath("$").value("User is disabled")).andReturn();
+        mvc.perform(request).andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$").value("User is disabled")).andReturn();
     }
 }

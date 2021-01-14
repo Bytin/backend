@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RestController;
 import core.boundary.UserIOBoundary;
+import core.usecase.user.ActivateUser;
 import core.usecase.user.CreateUser;
 import core.usecase.user.RetrieveProfile;
 import core.usecase.user.UpdateUserInfo;
@@ -30,8 +31,13 @@ public class UserController {
                     System.out.println("Activation Token: " + token + " -- for " + token.getUsername()); //TODO a real implementation with email sending
                 });
                 var resModel = userInteractor.createUser(req,
-                                s -> passwordEncoder.encode(s));
+                                password -> passwordEncoder.encode(password));
                 return ResponseEntity.ok().body(resModel);
+        }
+
+        @PostMapping("activate")
+        public ResponseEntity<?> activateUser(@RequestBody ActivateUser.RequestModel requestModel){
+                return ResponseEntity.ok().body(userInteractor.activateUser(requestModel));
         }
 
         @PostMapping("profile")
