@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import core.entity.User.UserRole;
 import lombok.RequiredArgsConstructor;
 import tech.bytin.api.jpaEntity.UserJpaEnity;
 
@@ -47,6 +48,6 @@ public class SecurityUser implements UserDetails {
 
         @Override
         public boolean isEnabled() {
-                return true;
+                return userJpaEnity.getRole() != UserRole.UNACTIVATED;
         }
 }
