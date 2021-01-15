@@ -1,12 +1,14 @@
 package tech.bytin.api.service.mail;
 
 import org.springframework.stereotype.Service;
+import core.entity.ActivationToken;
 
 @Service
 public class ActivationLinkMailSender extends MailSender {
 
-    public void sendActivationLink(String toEmail, String activationToken) {
-        String activationLink = env.getProperty("bytin.web.origin")
+    public void sendActivationLink(String toEmail, ActivationToken activationToken) {
+        
+        String activationLink = env.getProperty("web.location")
                 + "/auth/register/activate?activationToken=" + activationToken;
 
         sendHtmMail(toEmail, "Activate Your Account", String.format("""

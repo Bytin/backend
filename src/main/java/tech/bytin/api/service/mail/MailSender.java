@@ -25,7 +25,6 @@ public abstract class MailSender {
             helper.setTo(toEmail);
             helper.setSubject(SUBJECT_PREFIX + subject);
             helper.setText(content, true);
-            throw new IllegalStateException("Something went wrong while sending mail.");
         });
         sendMail(mimeMessage);
     }

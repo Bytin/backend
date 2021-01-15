@@ -30,7 +30,7 @@ public class UserController {
                         throws JsonProcessingException {
                 var req = new CreateUser.RequestModel(requestModel.getUsername(), requestModel.getEmail(), requestModel.getPassword(), token -> {
                     System.out.println("Activation Token: " + token + " -- for " + token.getUsername());
-                    activationMail.sendActivationLink(requestModel.getEmail(), token.toString());
+                    activationMail.sendActivationLink(requestModel.getEmail(), token);
                 });
                 var resModel = userInteractor.createUser(req,
                                 password -> passwordEncoder.encode(password));

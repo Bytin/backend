@@ -7,7 +7,7 @@ public class ResetPasswordMailSender extends MailSender {
 
     public void sendPasswordResetLink(String toEmail, String resetToken) {
 
-        String resetLink = env.getProperty("bytin.web.origin") + "/auth/reset-password?resetToken="
+        String resetLink = env.getProperty("web.location") + "/auth/reset-password?resetToken="
                 + resetToken;
 
         sendHtmMail(toEmail, "Reset Your Password",

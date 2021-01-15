@@ -1,0 +1,16 @@
+web:
+  location: localhost
+
+spring:
+  mail:
+    host: localhost
+    port: 25
+    username: test
+    password: testing
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
