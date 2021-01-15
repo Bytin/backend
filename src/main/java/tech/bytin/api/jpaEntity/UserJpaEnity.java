@@ -1,5 +1,6 @@
 package tech.bytin.api.jpaEntity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -22,7 +23,9 @@ public class UserJpaEnity {
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
         private long id;
-        private String username, email, password;
+        @Column(unique = true)
+        private String username, email;
+        private String password;
         @Enumerated(EnumType.STRING)
         private UserRole role;
 
