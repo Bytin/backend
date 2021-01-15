@@ -36,3 +36,8 @@ spring:
           starttls:
             enable: true
 
+hardcoded:
+  admin:
+    username: admin
+    email: fake@email.con
+    password: ${DEFAULT_ADMIN_PASSWORD}
