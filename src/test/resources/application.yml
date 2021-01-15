@@ -4,9 +4,10 @@ web:
 spring:
   mail:
     host: localhost
-    port: 25
+    port: 3025
     username: test
     password: testing
+    test-connection: true
     properties:
       mail:
         smtp:

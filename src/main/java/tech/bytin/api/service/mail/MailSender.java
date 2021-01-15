@@ -34,7 +34,7 @@ public abstract class MailSender {
             builder.build(mimeMessage);
         } catch (MessagingException e) {
             e.printStackTrace();
-            throw new IllegalStateException("Something went wrong while sending mail.");
+            throw new IllegalStateException("Something went wrong while sending email.");
         }
     }
 

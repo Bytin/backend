@@ -1,5 +1,9 @@
 package tech.bytin.api;
 
+import com.icegreen.greenmail.configuration.GreenMailConfiguration;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
+import com.icegreen.greenmail.util.ServerSetupTest;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -17,15 +21,20 @@ import tech.bytin.api.gateway.jpaRepo.JpaUserRepository;
 @ContextConfiguration(classes = {SecurityConfig.class, MailSenderAutoConfiguration.class})
 @WebMvcTest(UserController.class)
 public abstract class TestCase {
-        @MockBean
-        protected JpaUserRepository users;
+    @MockBean
+    protected JpaUserRepository users;
 
-        @MockBean
-        protected JpaSnippetRepository snippets;
+    @MockBean
+    protected JpaSnippetRepository snippets;
 
-        @MockBean
-        protected JpaActivationTokenRepo activationTokens;
+    @MockBean
+    protected JpaActivationTokenRepo activationTokens;
 
-        @Autowired
-        protected MockMvc mvc;
+    @Autowired
+    protected MockMvc mvc;
+
+    @RegisterExtension
+    protected static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP)
+            .withConfiguration(GreenMailConfiguration.aConfig().withUser("test", "testing"))
+            .withPerMethodLifecycle(false);
 }
