@@ -4,9 +4,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import core.dto.SnippetDTO;
+import core.utils.Page;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import java.util.List;
 import java.util.Optional;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,6 +35,7 @@ public class PublicSnippetsIntegrationTest extends TestCase {
         oneSnippet = sampleSnippet(1);
         sampleSnippets = List.of(sampleSnippet(1), sampleSnippet(2), sampleSnippet(3));
         Mockito.when(snippets.findMostRecent(anyInt())).thenReturn(sampleSnippets);
+        Mockito.when(snippets.findAllByIsHidden(false, PageRequest.of(0, 3))).thenReturn(new PageImpl<>(sampleSnippets, PageRequest.of(0, 3), 1));
         Mockito.when(snippets.findById(1l)).thenReturn(Optional.of(oneSnippet));
     }
 
@@ -40,6 +46,19 @@ public class PublicSnippetsIntegrationTest extends TestCase {
         var snippets = readSnippetsFrom(response, mapper);
         var snippetDtos = asDtoArray(sampleSnippets);
         assertArrayEquals(snippetDtos, snippets);
+    }
+
+    @Test
+    void allSnippetsTest() throws Exception {
+        var request = get("/snippets/public?page=0&size=3");
+        var response = mvc.perform(request).andExpect(status().isOk()).andReturn().getResponse();
+        var page_json = mapper.readTree(response.getContentAsString()).get("page").toString();
+        var page = mapper.readValue(page_json, new TypeReference<Page<SnippetDTO>>(){});
+        assertEquals(0, page.getNumber());
+        assertEquals(3, page.getSize());
+        assertEquals(1, page.getTotal());
+        var snippetDtos = asDtoArray(sampleSnippets);
+        assertArrayEquals(snippetDtos, page.getContent().toArray());
     }
 
     @Test

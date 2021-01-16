@@ -1,5 +1,7 @@
 package tech.bytin.api.util;
 
+import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
 import core.entity.ActivationToken;
 import core.entity.Snippet;
 import core.entity.User;
@@ -29,8 +31,7 @@ public class EntityMapper {
                 .code(snippet.getCode()).description(snippet.getDescription())
                 .owner(mapJpaUserToUserEntity(snippet.getOwner())).resource(snippet.getResource())
                 .whenCreated(snippet.getWhenCreated())
-                .whenLastModified(snippet.getWhenLastModified())
-                .hidden(snippet.isHidden()).build();
+                .whenLastModified(snippet.getWhenLastModified()).hidden(snippet.isHidden()).build();
     }
 
     public static SnippetJpaEntity mapSnippetToJpaEntity(Snippet snippet) {
@@ -39,8 +40,7 @@ public class EntityMapper {
                 .code(snippet.getCode()).description(snippet.getDescription())
                 .owner(mapUserToJpaEntity(snippet.getOwner())).resource(snippet.getResource())
                 .whenCreated(snippet.getWhenCreated())
-                .whenLastModified(snippet.getWhenLastModified())
-                .hidden(snippet.isHidden()).build();
+                .whenLastModified(snippet.getWhenLastModified()).hidden(snippet.isHidden()).build();
     }
 
     public static ActivationTokenJpaEntity mapActivationTokenToJpa(ActivationToken token) {
@@ -54,4 +54,13 @@ public class EntityMapper {
                 new ExpiringToken(token.getUuid(), token.getLifeSpan(), token.getDateCreated());
         return new ActivationToken(token.getId(), token.getUsername(), expiringToken);
     }
+
+    public static core.utils.Page<Snippet> mapJpaSnippetPageToCoreSnippetPage(
+            Page<SnippetJpaEntity> jpaPage) {
+        return new core.utils.Page<Snippet>(jpaPage.getNumber(), jpaPage.getTotalPages(),
+                jpaPage.getSize(),
+                jpaPage.getContent().stream().map(EntityMapper::mapJpaSnippetToSnippetEntity)
+                        .collect(Collectors.toList()));
+    }
+
 }
