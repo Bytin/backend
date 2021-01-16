@@ -16,45 +16,41 @@ import tech.bytin.api.util.EntityMapper;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-        @Bean
-        UsernamePasswordAuthenticationFilter loginFilter() throws Exception {
-                var filter = new UsernamePasswordFromRequestBodyAuthenticationFilter();
-                filter.setAuthenticationManager(authenticationManager());
-                return filter;
-        }
+    @Bean
+    UsernamePasswordAuthenticationFilter loginFilter() throws Exception {
+        var filter = new UsernamePasswordFromRequestBodyAuthenticationFilter();
+        filter.setAuthenticationManager(authenticationManager());
+        return filter;
+    }
 
-        @Bean
-        PasswordEncoder passwordEncoder() {
-                return new BCryptPasswordEncoder();
-        }
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-                http.authorizeRequests().antMatchers("/login", "/user/register", "/user/activate", "/hello", "/snippets/public/*").permitAll().anyRequest()
-                                .authenticated();
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests().antMatchers("/login", "/user/register", "/user/activate", "/hello",
+                "/snippets/public/*").permitAll().anyRequest().authenticated();
 
-                http.exceptionHandling(e -> e.authenticationEntryPoint((req, res, ex) -> {
-                        res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                        res.getWriter().println("Access Denied");
-                }));
+        http.exceptionHandling().authenticationEntryPoint((req, res, ex) -> res
+                .sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage()));
 
-                http.logout().logoutSuccessHandler(((request, response, e) -> {
-                        response.setContentType("application/json");
-                        response.setStatus(HttpServletResponse.SC_OK);
-                        response.getWriter().println("Logout Successful");
-                })).deleteCookies();
+        http.logout().logoutSuccessHandler(((request, response, e) -> {
+            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getWriter().println("Logout Successful");
+        })).deleteCookies();
 
-                http.csrf().disable();
-        }
+        http.csrf().disable();
+    }
 
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-                UserRepository repo = getApplicationContext().getBean("userGateway",
-                                UserRepository.class);
-                auth.userDetailsService(username -> new SecurityUser(
-                                repo.findByUserName(username).map(EntityMapper::mapUserToJpaEntity)
-                                                .orElseThrow(() -> new UsernameNotFoundException(
-                                                                "Unable to find that user"))));
-        }
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        UserRepository repo = getApplicationContext().getBean("userGateway", UserRepository.class);
+        auth.userDetailsService(username -> new SecurityUser(
+                repo.findByUserName(username).map(EntityMapper::mapUserToJpaEntity).orElseThrow(
+                        () -> new UsernameNotFoundException("Unable to find that user"))));
+    }
 
 }

@@ -5,9 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import core.entity.ActivationToken;
 import core.entity.User.UserRole;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import tech.bytin.api.TestCase;
@@ -51,8 +53,8 @@ public class UserIntegrationTest extends TestCase {
                             "token": "%s"
                         }
                         """, james, "laksdyblkaewrulyadsgl"));
-        mvc.perform(request).andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$").value("A token is not assigned to " + james));
+        MockHttpServletResponse res = mvc.perform(request).andExpect(status().isBadRequest()).andReturn().getResponse();
+        assertEquals("A token is not assigned to " + james, res.getErrorMessage());
     }
 
     @Test
@@ -64,8 +66,8 @@ public class UserIntegrationTest extends TestCase {
                             "token": "%s"
                         }
                         """, noah, "laksdyblkaewrulyadsgl"));
-        mvc.perform(request).andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$").value("That token is not the one assigned."));
+        MockHttpServletResponse res = mvc.perform(request).andExpect(status().isBadRequest()).andReturn().getResponse();
+        assertEquals("That token is not the one assigned.", res.getErrorMessage());
     }
 
     @Test
@@ -77,7 +79,7 @@ public class UserIntegrationTest extends TestCase {
                         "password":"%s"
                 }
                 """, username, password));
-        mvc.perform(request).andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$").value("User is disabled")).andReturn();
+        MockHttpServletResponse res = mvc.perform(request).andExpect(status().isBadRequest()).andReturn().getResponse();
+        assertEquals("User is disabled", res.getErrorMessage());
     }
 }

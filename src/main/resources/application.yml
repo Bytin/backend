@@ -1,6 +1,7 @@
 server:
   port: ${PORT:8080}
   error:
+    include-stacktrace: on-trace-param
     whitelabel:
       enabled: false
   forward-headers-strategy: ${FORWARD_HEADERS_STRATEGY:framework}
