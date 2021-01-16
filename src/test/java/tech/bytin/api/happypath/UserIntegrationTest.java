@@ -75,20 +75,6 @@ public class UserIntegrationTest extends TestCase {
     }
 
     @Test
-    void activateUserFailsWhenUserHasntRegisteredTest() throws Exception {
-        var request =
-                post("/user/activate").contentType("application/json").content(String.format("""
-                        {
-                            "username": "%s",
-                            "token": "%s"
-                        }
-                        """, james, "laksdyblkaewrulyadsgl"));
-        mvc.perform(request).andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$").value("A token is not assigned to " + james));
-    }
-
-
-    @Test
     @WithMockUser(username = noah, roles = {"USER"})
     void getProfileTest() throws Exception {
         var request =
@@ -99,19 +85,6 @@ public class UserIntegrationTest extends TestCase {
                         """, noah));
         mvc.perform(request).andExpect(status().isOk()).andExpect(
                 jsonPath("$.user").value(new UserDTO(1, noah, noah + "@gmail.com", UserRole.USER)));
-    }
-
-    @Test
-    void activateUserFailsWhenTokenIsBadTest() throws Exception {
-        var request =
-                post("/user/activate").contentType("application/json").content(String.format("""
-                        {
-                            "username": "%s",
-                            "token": "%s"
-                        }
-                        """, noah, "laksdyblkaewrulyadsgl"));
-        mvc.perform(request).andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$").value("That token is not the one assigned."));
     }
 
     @Test
@@ -139,16 +112,4 @@ public class UserIntegrationTest extends TestCase {
                 .andExpect(jsonPath("$").value("Login Successful")).andReturn();
     }
 
-    @Test
-    void loginFailsWithUnactivatedUser() throws Exception {
-        String username = "james";
-        var request = post("/login").contentType("application/json").content(String.format("""
-                {
-                        "username":"%s",
-                        "password":"%s"
-                }
-                """, username, password));
-        mvc.perform(request).andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$").value("User is disabled")).andReturn();
-    }
 }
