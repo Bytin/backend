@@ -16,13 +16,18 @@ public final class TestUtils {
     private TestUtils() {
     }
 
-    public static SnippetJpaEntity sampleSnippet(long id) {
+    public static SnippetJpaEntity sampleSnippet(long id, String username) {
         return SnippetJpaEntity.builder().id(id).title("good code").language("java")
                 .code("System.out.println(\"Yo!\")")
-                .owner(new UserJpaEnity(1, "test", "test@gmail.com", "sldkafjlkj", UserRole.USER))
+                .owner(new UserJpaEnity(1, username, username + "@gmail.com", "sldkafjlkj",
+                        UserRole.USER))
                 .description("robust").whenCreated(LocalDateTime.now())
                 .whenLastModified(LocalDateTime.now()).build();
     }
+
+    public static SnippetJpaEntity sampleSnippet(long id) {
+        return sampleSnippet(id, "test");
+   }
 
     public static SnippetDTO[] asDtoArray(List<SnippetJpaEntity> snippets) {
         return snippets.stream().map(EntityMapper::mapJpaSnippetToSnippetEntity)
