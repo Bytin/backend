@@ -18,6 +18,6 @@ public interface JpaSnippetRepository extends JpaRepository<SnippetJpaEntity, Lo
 
         Page<SnippetJpaEntity> findAllByOwnerUsername(String owner, Pageable pageable);
 
-        Page<SnippetJpaEntity> findAllByIsHidden(boolean bool, Pageable pageable);
+        Page<SnippetJpaEntity> findAllByHidden(boolean bool, Pageable pageable);
 }
 

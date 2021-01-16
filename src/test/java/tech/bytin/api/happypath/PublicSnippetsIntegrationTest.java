@@ -35,7 +35,7 @@ public class PublicSnippetsIntegrationTest extends TestCase {
         oneSnippet = sampleSnippet(1);
         sampleSnippets = List.of(sampleSnippet(1), sampleSnippet(2), sampleSnippet(3));
         Mockito.when(snippets.findMostRecent(anyInt())).thenReturn(sampleSnippets);
-        Mockito.when(snippets.findAllByIsHidden(false, PageRequest.of(0, 3))).thenReturn(new PageImpl<>(sampleSnippets, PageRequest.of(0, 3), 1));
+        Mockito.when(snippets.findAllByHidden(false, PageRequest.of(0, 3))).thenReturn(new PageImpl<>(sampleSnippets, PageRequest.of(0, 3), 1));
         Mockito.when(snippets.findById(1l)).thenReturn(Optional.of(oneSnippet));
     }
 

@@ -64,7 +64,7 @@ public class SnippetRepository implements SnippetGateway {
     @Override
     public core.utils.Page<Snippet> findAllPublic(int page, int pageSize) {
         Page<SnippetJpaEntity> jpaPage =
-                springRepo.findAllByIsHidden(false, PageRequest.of(page, pageSize));
+                springRepo.findAllByHidden(false, PageRequest.of(page, pageSize));
         return mapJpaSnippetPageToCoreSnippetPage(jpaPage);
     }
 
