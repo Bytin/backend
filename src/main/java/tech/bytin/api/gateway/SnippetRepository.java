@@ -42,12 +42,12 @@ public class SnippetRepository implements SnippetGateway {
 
         @Override
         public Collection<Snippet> findAllByOwnerUsername(String username) {
-                return springRepo.findAllByOwnerUsername(username);
+                return springRepo.findAllByOwnerUsername(username).stream().map(EntityMapper::mapJpaSnippetToSnippetEntity).collect(Collectors.toList());
         }
 
         @Override
         public Collection<Snippet> findMostRecent(int size) {
-                return springRepo.findMostRecent(size);
+                return springRepo.findMostRecent(size).stream().map(EntityMapper::mapJpaSnippetToSnippetEntity).collect(Collectors.toList());
         }
 
         @Override

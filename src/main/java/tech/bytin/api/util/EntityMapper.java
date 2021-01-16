@@ -28,6 +28,8 @@ public class EntityMapper {
                 .language(snippet.getLanguage()).framework(snippet.getFramework())
                 .code(snippet.getCode()).description(snippet.getDescription())
                 .owner(mapJpaUserToUserEntity(snippet.getOwner())).resource(snippet.getResource())
+                .whenCreated(snippet.getWhenCreated())
+                .whenLastModified(snippet.getWhenLastModified())
                 .hidden(snippet.isHidden()).build();
     }
 
@@ -36,6 +38,8 @@ public class EntityMapper {
                 .language(snippet.getLanguage()).framework(snippet.getFramework())
                 .code(snippet.getCode()).description(snippet.getDescription())
                 .owner(mapUserToJpaEntity(snippet.getOwner())).resource(snippet.getResource())
+                .whenCreated(snippet.getWhenCreated())
+                .whenLastModified(snippet.getWhenLastModified())
                 .hidden(snippet.isHidden()).build();
     }
 

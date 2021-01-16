@@ -12,14 +12,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import tech.bytin.api.config.security.SecurityConfig;
-import tech.bytin.api.controller.UserController;
 import tech.bytin.api.gateway.jpaRepo.JpaActivationTokenRepo;
 import tech.bytin.api.gateway.jpaRepo.JpaSnippetRepository;
 import tech.bytin.api.gateway.jpaRepo.JpaUserRepository;
 
 @ComponentScan("tech.bytin.api")
 @ContextConfiguration(classes = {SecurityConfig.class, MailSenderAutoConfiguration.class})
-@WebMvcTest(UserController.class)
+@WebMvcTest()
 public abstract class TestCase {
     @MockBean
     protected JpaUserRepository users;

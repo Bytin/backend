@@ -2,13 +2,15 @@ package tech.bytin.api.controller;
 
 import java.time.LocalDateTime;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import core.boundary.SnippetIOBoundary;
 import core.usecase.snippet.CreateSnippet;
+import core.usecase.snippet.DeleteSnippetOfUser;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -25,10 +27,10 @@ public class SnippetController {
                 return ResponseEntity.ok().body(snippetInteractor.createSnippet(requestModel));
         }
 
-        @GetMapping("testauth")
-        public String test(){
-                return "You're good";
+        @DeleteMapping("delete/{id}")
+        public ResponseEntity<?> deleteSnippet(@PathVariable long id){
+            var req = new DeleteSnippetOfUser.RequestModel(id);
+            return ResponseEntity.ok().body(snippetInteractor.deleteOne(req));
         }
-
 
 }

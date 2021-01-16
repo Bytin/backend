@@ -45,6 +45,11 @@ public class SnippetsIntegrationTest extends TestCase {
                                 .value("Snippet has been successfully saved."));
         }
 
-
+        @Test
+        @WithMockUser(username = username, roles = {"USER"})
+        void deleteTest() throws Exception{
+            var request = delete("/snippets/delete/105");
+            mvc.perform(request).andExpect(status().isOk()).andExpect(jsonPath("$.message").value("Snippet was deleted successfully."));
+        }
 
 }

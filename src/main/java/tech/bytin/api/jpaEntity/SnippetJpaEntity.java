@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,6 +33,10 @@ public class SnippetJpaEntity{
 
         @ManyToOne(fetch = FetchType.LAZY)
         private UserJpaEnity owner;
-        private LocalDateTime whenCreated, whenLastModified;
+
+        @CreationTimestamp
+        private LocalDateTime whenCreated;
+        @UpdateTimestamp
+        private LocalDateTime whenLastModified;
 
 }
