@@ -109,7 +109,7 @@ public class UserIntegrationTest extends TestCase {
                 }
                 """, noah, password));
         mvc.perform(request).andExpect(status().isOk())
-                .andExpect(jsonPath("$").value("Login Successful")).andReturn();
+                .andExpect(jsonPath("$").value(new UserDTO(1, noah, email_noah, UserRole.USER))).andReturn();
     }
 
 }

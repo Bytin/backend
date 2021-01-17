@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Component;
 import core.entity.Snippet;
 import core.gateway.SnippetGateway;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import tech.bytin.api.util.EntityMapper;
 import static tech.bytin.api.util.EntityMapper.*;
 
 @RequiredArgsConstructor
+@Component
 public class SnippetRepository implements SnippetGateway {
 
     private final JpaSnippetRepository springRepo;

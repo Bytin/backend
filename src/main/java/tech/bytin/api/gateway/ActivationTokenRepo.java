@@ -3,6 +3,7 @@ package tech.bytin.api.gateway;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 import core.entity.ActivationToken;
 import core.gateway.ActivationTokenGateway;
 import lombok.NonNull;
@@ -11,6 +12,7 @@ import tech.bytin.api.gateway.jpaRepo.JpaActivationTokenRepo;
 import tech.bytin.api.util.EntityMapper;
 
 @RequiredArgsConstructor
+@Component
 public class ActivationTokenRepo implements ActivationTokenGateway {
 
     private final JpaActivationTokenRepo springRepo;

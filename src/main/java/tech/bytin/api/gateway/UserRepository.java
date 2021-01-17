@@ -8,8 +8,10 @@ import tech.bytin.api.util.EntityMapper;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
+@Component
 public class UserRepository implements UserGateway {
 
         private final JpaUserRepository jpaRepo;

@@ -19,7 +19,7 @@ public class UsernamePasswordFromRequestBodyAuthenticationFilter
     private ObjectMapper objectMapper;
 
     @Autowired
-    private UserGateway userRepo;
+    private UserGateway gateway;
 
     private record Details(String username, String password) {
     }
@@ -30,7 +30,7 @@ public class UsernamePasswordFromRequestBodyAuthenticationFilter
         setAuthenticationSuccessHandler((req, response, auth) -> {
             response.setContentType("application/json");
             response.getWriter().println(objectMapper.writeValueAsString(
-                    userRepo.findByUserName(auth.getName()).map(user -> user.toUserDto())));
+                    gateway.findByUserName(auth.getName()).map(user -> user.toUserDto())));
         });
         setAuthenticationFailureHandler((req, response, ex) -> response
                 .sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage()));
