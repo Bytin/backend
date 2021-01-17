@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import core.gateway.UserGateway;
 
 public class UsernamePasswordFromRequestBodyAuthenticationFilter
         extends UsernamePasswordAuthenticationFilter {
@@ -17,15 +18,19 @@ public class UsernamePasswordFromRequestBodyAuthenticationFilter
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private UserGateway userRepo;
+
     private record Details(String username, String password) {
     }
 
     private Details details;
 
     public UsernamePasswordFromRequestBodyAuthenticationFilter() {
-        setAuthenticationSuccessHandler((req, response, e) -> {
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().println("Login Successful");
+        setAuthenticationSuccessHandler((req, response, auth) -> {
+            response.setContentType("application/json");
+            response.getWriter().println(objectMapper.writeValueAsString(
+                    userRepo.findByUserName(auth.getName()).map(user -> user.toUserDto())));
         });
         setAuthenticationFailureHandler((req, response, ex) -> response
                 .sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage()));
