@@ -55,6 +55,11 @@ public class UserRepository implements UserGateway {
         public void delete(User user) {
                 jpaRepo.delete(EntityMapper.mapUserToJpaEntity(user));
         }
+
+        @Override
+        public long count() {
+            return jpaRepo.count();
+        }
 }
 
 

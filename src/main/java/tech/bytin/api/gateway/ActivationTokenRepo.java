@@ -53,6 +53,9 @@ public class ActivationTokenRepo implements ActivationTokenGateway {
         return springRepo.findByUsername(username).map(EntityMapper::mapJpaToCoreActivationToken);
     }
 
-
+    @Override
+    public long count() {
+        return springRepo.count();
+    }
 
 }

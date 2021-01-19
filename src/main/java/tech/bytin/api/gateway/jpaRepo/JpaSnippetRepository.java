@@ -1,6 +1,7 @@
 package tech.bytin.api.gateway.jpaRepo;
 
 import java.util.Collection;
+import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,5 +19,8 @@ public interface JpaSnippetRepository extends JpaRepository<SnippetJpaEntity, Lo
         Page<SnippetJpaEntity> findAllByOwnerUsername(String owner, Pageable pageable);
 
         Page<SnippetJpaEntity> findAllByHidden(boolean bool, Pageable pageable);
+
+        @Query("FROM Snippet")
+        Stream<SnippetJpaEntity> streamAll();
 }
 

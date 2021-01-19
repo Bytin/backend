@@ -2,10 +2,13 @@ package tech.bytin.api.gateway;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import core.entity.Snippet;
 import core.gateway.SnippetGateway;
 import lombok.RequiredArgsConstructor;
@@ -75,6 +78,17 @@ public class SnippetRepository implements SnippetGateway {
         Page<SnippetJpaEntity> jpaPage =
                 springRepo.findAllByOwnerUsername(owner, PageRequest.of(page, pageSize));
         return mapJpaSnippetPageToCoreSnippetPage(jpaPage);
+    }
+
+    @Override
+    public long count() {
+        return springRepo.count();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void withSnippetsStream(Consumer<Stream<Snippet>> consumer) {
+        consumer.accept(springRepo.streamAll().map(EntityMapper::mapJpaSnippetToSnippetEntity));
     }
 
 }

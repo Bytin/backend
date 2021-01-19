@@ -5,11 +5,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import core.boundary.SnippetIOBoundary;
 import core.usecase.snippet.RetrieveAllSnippetsOfUser;
 import core.usecase.snippet.RetrieveSnippetOfUser;
+import core.usecase.snippet.SearchSnippets;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -31,6 +34,12 @@ public class PrivateSnippetController {
     ResponseEntity<?> getOne(@PathVariable long id, Principal principal) {
         return ResponseEntity.ok().body(snippetInteractor.retrieveSnippetOfUser(
                 new RetrieveSnippetOfUser.RequestModel(id, principal.getName())));
+    }
+
+    @PostMapping("/search")
+    ResponseEntity<?> search(@RequestBody SearchSnippets.RequestModel requestModel, Principal principal) {
+        requestModel.predicate = snippet -> snippet.getOwner().getUsername().equals(principal.getName());
+        return ResponseEntity.ok().body(snippetInteractor.searchPublicSnippets(requestModel));
     }
 
 }
