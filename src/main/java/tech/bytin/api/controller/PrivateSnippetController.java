@@ -38,8 +38,7 @@ public class PrivateSnippetController {
 
     @PostMapping("/search")
     ResponseEntity<?> search(@RequestBody SearchSnippets.RequestModel requestModel, Principal principal) {
-        requestModel.predicate = snippet -> snippet.getOwner().getUsername().equals(principal.getName());
-        return ResponseEntity.ok().body(snippetInteractor.searchPublicSnippets(requestModel));
+        return ResponseEntity.ok().body(snippetInteractor.searchSnippetsOfUser(requestModel, principal.getName()));
     }
 
 }

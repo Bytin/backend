@@ -45,7 +45,6 @@ public class PublicSnippetController {
 
     @PostMapping("/search")
     ResponseEntity<?> search(@RequestBody SearchSnippets.RequestModel requestModel) {
-        requestModel.predicate = snippet -> !snippet.isHidden();
         return ResponseEntity.ok().body(snippetInteractor.searchPublicSnippets(requestModel));
     }
 

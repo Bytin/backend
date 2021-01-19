@@ -19,25 +19,27 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("snippets")
 public class SnippetController {
-        
-        private final SnippetIOBoundary snippetInteractor;
 
-        @PostMapping("add")
-        public ResponseEntity<?> addASnippet(@RequestBody CreateSnippet.RequestModel requestModel ){
-                requestModel.getSnippet().setWhenCreated(LocalDateTime.now());
-                requestModel.getSnippet().setWhenLastModified(LocalDateTime.now());
-                return ResponseEntity.ok().body(snippetInteractor.createSnippet(requestModel));
-        }
+    private final SnippetIOBoundary snippetInteractor;
 
-        @PutMapping("update")
-        public ResponseEntity<?> updateOne(@RequestBody UpdateSnippet.RequestModel requestModel){
-            return ResponseEntity.ok().body(snippetInteractor.updateSnippet(requestModel));
-        }
+    @PostMapping("add")
+    public ResponseEntity<?> addASnippet(@RequestBody CreateSnippet.RequestModel requestModel) {
+        requestModel.getSnippet().setWhenCreated(LocalDateTime.now());
+        requestModel.getSnippet().setWhenLastModified(LocalDateTime.now());
+        return ResponseEntity.ok().body(snippetInteractor.createSnippet(requestModel));
+    }
 
-        @DeleteMapping("delete/{id}")
-        public ResponseEntity<?> deleteSnippet(@PathVariable long id){
-            var req = new DeleteSnippetOfUser.RequestModel(id);
-            return ResponseEntity.ok().body(snippetInteractor.deleteOne(req));
-        }
+    @PutMapping("update")
+    public ResponseEntity<?> updateOne(@RequestBody UpdateSnippet.RequestModel requestModel) {
+        requestModel.getSnippet().setWhenCreated(LocalDateTime.now());
+        requestModel.getSnippet().setWhenLastModified(LocalDateTime.now());
+        return ResponseEntity.ok().body(snippetInteractor.updateSnippet(requestModel));
+    }
+
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<?> deleteSnippet(@PathVariable long id) {
+        var req = new DeleteSnippetOfUser.RequestModel(id);
+        return ResponseEntity.ok().body(snippetInteractor.deleteOne(req));
+    }
 
 }
