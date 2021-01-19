@@ -90,7 +90,7 @@ public class UserIntegrationTest extends TestCase {
     @Test
     @WithMockUser(username = noah, roles = {"USER"})
     void updateUserTest() throws Exception {
-        var request = post("/user/update").contentType("application/json").content(String.format("""
+        var request = put("/user/update").contentType("application/json").content(String.format("""
                 {
                         "oldUsername": "%s",
                         "username": "roger"

@@ -12,6 +12,7 @@ import core.usecase.user.UpdateUserInfo;
 import lombok.RequiredArgsConstructor;
 import tech.bytin.api.service.mail.ActivationLinkMailSender;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -48,7 +49,7 @@ public class UserController {
                 return ResponseEntity.ok().body(userInteractor.retrieveProfile(requestModel));
         }
 
-        @PostMapping("update")
+        @PutMapping("update")
         public ResponseEntity<?> updateUser(@RequestBody UpdateUserInfo.RequestModel requestModel){
                 return ResponseEntity.ok().body(userInteractor.updateUserInfo(requestModel));
         }
