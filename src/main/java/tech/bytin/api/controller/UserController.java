@@ -1,5 +1,6 @@
 package tech.bytin.api.controller;
 
+import java.security.Principal;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,6 +12,8 @@ import core.usecase.user.RetrieveProfile;
 import core.usecase.user.UpdateUserInfo;
 import lombok.RequiredArgsConstructor;
 import tech.bytin.api.service.mail.ActivationLinkMailSender;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,36 +25,44 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 public class UserController {
 
-        private final UserIOBoundary userInteractor;
-        private final PasswordEncoder passwordEncoder;
-        private final ActivationLinkMailSender activationMail;
+    private final UserIOBoundary userInteractor;
+    private final PasswordEncoder passwordEncoder;
+    private final ActivationLinkMailSender activationMail;
 
-        @PostMapping("register")
-        public ResponseEntity<?> createUser(@RequestBody CreateUser.RequestModel requestModel)
-                        throws JsonProcessingException {
-                var req = new CreateUser.RequestModel(requestModel.getUsername(), requestModel.getEmail(), requestModel.getPassword(), token -> {
-                    System.out.println("Activation Token: " + token + " -- for " + token.getUsername());
+    @PostMapping("register")
+    public ResponseEntity<?> createUser(@RequestBody CreateUser.RequestModel requestModel)
+            throws JsonProcessingException {
+        var req = new CreateUser.RequestModel(requestModel.getUsername(), requestModel.getEmail(),
+                requestModel.getPassword(), token -> {
+                    System.out.println(
+                            "Activation Token: " + token + " -- for " + token.getUsername());
                     activationMail.sendActivationLink(requestModel.getEmail(), token);
                 });
-                var resModel = userInteractor.createUser(req,
-                                password -> passwordEncoder.encode(password));
-                var revisedResponse = new CreateUser.ResponseModel(resModel.getMessage() + " Check your email for instructions on how to activate the account.");
-                return ResponseEntity.ok().body(revisedResponse);
-        }
+        var resModel = userInteractor.createUser(req, password -> passwordEncoder.encode(password));
+        var revisedResponse = new CreateUser.ResponseModel(resModel.getMessage()
+                + " Check your email for instructions on how to activate the account.");
+        return ResponseEntity.ok().body(revisedResponse);
+    }
 
-        @PostMapping("activate")
-        public ResponseEntity<?> activateUser(@RequestBody ActivateUser.RequestModel requestModel){
-                return ResponseEntity.ok().body(userInteractor.activateUser(requestModel));
-        }
+    @PostMapping("activate")
+    public ResponseEntity<?> activateUser(@RequestBody ActivateUser.RequestModel requestModel) {
+        return ResponseEntity.ok().body(userInteractor.activateUser(requestModel));
+    }
 
-        @PostMapping("profile")
-        public ResponseEntity<?> getProfile(@RequestBody RetrieveProfile.RequestModel requestModel){
-                return ResponseEntity.ok().body(userInteractor.retrieveProfile(requestModel));
-        }
+    @GetMapping("profile")
+    public ResponseEntity<?> getProfile(Principal principal) {
+        return ResponseEntity.ok().body(userInteractor
+                .retrieveProfile(new RetrieveProfile.RequestModel(principal.getName())));
+    }
 
-        @PutMapping("update")
-        public ResponseEntity<?> updateUser(@RequestBody UpdateUserInfo.RequestModel requestModel){
-                return ResponseEntity.ok().body(userInteractor.updateUserInfo(requestModel));
-        }
+    @GetMapping("profile/{username}")
+    public ResponseEntity<?> getProfile(@PathVariable String username) {
+        return ResponseEntity.ok().body(userInteractor.retrieveProfile(new RetrieveProfile.RequestModel(username)));
+    }
+
+    @PutMapping("update")
+    public ResponseEntity<?> updateUser(@RequestBody UpdateUserInfo.RequestModel requestModel) {
+        return ResponseEntity.ok().body(userInteractor.updateUserInfo(requestModel));
+    }
 
 }

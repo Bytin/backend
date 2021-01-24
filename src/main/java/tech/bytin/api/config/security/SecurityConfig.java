@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors();
 
-        http.authorizeRequests().antMatchers("/login", "/user/register", "/user/activate", "/hello",
+        http.authorizeRequests().antMatchers("/login", "/user/register", "user/profile", "/user/activate", "/hello",
                 "/snippets/public/**").permitAll().anyRequest().authenticated();
 
         http.exceptionHandling().authenticationEntryPoint((req, res, ex) -> res

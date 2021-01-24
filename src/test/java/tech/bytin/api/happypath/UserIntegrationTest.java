@@ -58,7 +58,8 @@ public class UserIntegrationTest extends TestCase {
                         }
                         """, username, email, password));
         mvc.perform(request).andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("User '" + username + "' created. Check your email for instructions on how to activate the account."));
+                .andExpect(jsonPath("$.message").value("User '" + username
+                        + "' created. Check your email for instructions on how to activate the account."));
     }
 
     @Test
@@ -76,13 +77,24 @@ public class UserIntegrationTest extends TestCase {
 
     @Test
     @WithMockUser(username = noah, roles = {"USER"})
+    void getOwnProfileTest() throws Exception {
+        var request = get("/user/profile").contentType("application/json").content(String.format("""
+                {
+                        "username": "%s"
+                }
+                """, noah));
+        mvc.perform(request).andExpect(status().isOk()).andExpect(
+                jsonPath("$.user").value(new UserDTO(1, noah, noah + "@gmail.com", UserRole.USER)));
+    }
+
+    @Test
+    @WithMockUser(username = "anadmin", roles = {"ADMIN"})
     void getProfileTest() throws Exception {
-        var request =
-                post("/user/profile").contentType("application/json").content(String.format("""
-                        {
-                                "username": "%s"
-                        }
-                        """, noah));
+        var request = get("/user/profile/" + noah).contentType("application/json").content(String.format("""
+                {
+                        "username": "%s"
+                }
+                """, noah));
         mvc.perform(request).andExpect(status().isOk()).andExpect(
                 jsonPath("$.user").value(new UserDTO(1, noah, noah + "@gmail.com", UserRole.USER)));
     }
@@ -109,7 +121,8 @@ public class UserIntegrationTest extends TestCase {
                 }
                 """, noah, password));
         mvc.perform(request).andExpect(status().isOk())
-                .andExpect(jsonPath("$").value(new UserDTO(1, noah, email_noah, UserRole.USER))).andReturn();
+                .andExpect(jsonPath("$").value(new UserDTO(1, noah, email_noah, UserRole.USER)))
+                .andReturn();
     }
 
 }
